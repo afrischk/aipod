@@ -83,6 +83,7 @@ Customize the container to your liking:
 | `USER_GID` | current host gid | Container user gid (or `1000` when `USE_HOST_USER=false`) |
 | `HOSTNAME` | `aipod` | Name of the container |
 | `CHEZMOI_DOTFILES_REPO` | | GitHub repo for [chezmoi](https://www.chezmoi.io/) dotfiles (eg: `user/dotfiles`). Does nothing if blank |
+| `GH_TOKEN` | | GitHub authentication token exposed to the container |
 | `USE_RUST` | `true` | Install Rust via rustup, cargo, and ripgrep (nice for Claude Code) |
 | `USE_NPM` | `true` | Install nvm and Node.js 25 |
 | `USE_UV` | `true` | Install uv (Python package manager) |

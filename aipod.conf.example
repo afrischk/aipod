@@ -6,6 +6,7 @@ USE_HOST_USER=true
 HOSTNAME=aipod
 CHEZMOI_DOTFILES_REPO=maurycy/dotfiles
 CONTAINERFILE=Containerfile
+GH_TOKEN=
 
 USE_RUST=true
 USE_NPM=true
