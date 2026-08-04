@@ -29,6 +29,7 @@ USE_OVERMIND="false"
 USE_JUST="false"
 CONTAINERFILE=""
 CAP_ADD=""
+CREATE_ARGS=""
 
 usage() {
 	cat <<EOF
@@ -227,6 +228,8 @@ cmd_up_headless() {
 	for cap in ${CAP_ADD}; do
 		set -- "$@" --cap-add "$cap"
 	done
+	# shellcheck disable=SC2086
+	set -- "$@" ${CREATE_ARGS}
 	if container_exists; then
 		if ! container_running; then
 			log info "starting container ${CONTAINER_NAME}"
