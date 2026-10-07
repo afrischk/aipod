@@ -79,7 +79,7 @@ Customize the container to your liking:
 | `USERNAME` | `developer` | User name |
 | `HOSTNAME` | `aipod` | Name of the container |
 | `CHEZMOI_DOTFILES_REPO` | | GitHub repo for [chezmoi](https://www.chezmoi.io/) dotfiles (eg: `user/dotfiles`). Does nothing if blank |
-| `PASSTHROUGH_ENV` | | Space-separated environment variable names passed to interactive shells and `aipod run` |
+| `PASS_ENV` | | Space-separated environment variable names passed to interactive shells and `aipod run` |
 | `USE_RUST` | `true` | Install Rust via rustup, cargo, and ripgrep (nice for Claude Code) |
 | `USE_NPM` | `true` | Install nvm and Node.js 25 |
 | `USE_UV` | `true` | Install uv (Python package manager) |
@@ -107,12 +107,12 @@ Some useful `CREATE_ARGS` recipes:
 Arguments apply when the container is created, so changing `CREATE_ARGS` requires `aipod clean` (or a container recreation) to take effect. Argument values containing spaces are not supported.
 
 To expose credentials without storing them in the container configuration, list
-their variable names in `PASSTHROUGH_ENV`. Values are read from aipod's environment
+their variable names in `PASS_ENV`. Values are read from aipod's environment
 when it opens a shell or runs a command. For example, this retrieves the GitHub
 token from the GitHub CLI credential store without writing the token to the config:
 
 ```sh
-PASSTHROUGH_ENV="GH_TOKEN"
+PASS_ENV="GH_TOKEN"
 GH_TOKEN="$(gh auth token)"
 ```
 

@@ -30,7 +30,7 @@ USE_JUST="false"
 CONTAINERFILE=""
 CAP_ADD=""
 CREATE_ARGS=""
-PASSTHROUGH_ENV=""
+PASS_ENV=""
 
 usage() {
 	cat <<EOF
@@ -165,14 +165,16 @@ run_image() {
 # Execute a command with TTY handling and configured host environment variables.
 # Passing only variable names keeps their values out of the process arguments.
 podman_exec() (
-	for variable in ${PASSTHROUGH_ENV}; do
+	# Split configured names on whitespace without expanding filename patterns.
+	set -f
+	for variable in ${PASS_ENV}; do
 		case "${variable}" in
 		'' | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
-			die critical "invalid environment variable name in PASSTHROUGH_ENV: ${variable}"
+			die critical "invalid environment variable name in PASS_ENV: ${variable}"
 			;;
 		esac
 
-		export "${variable}"
+		export "${variable?}"
 		set -- --env "${variable}" "$@"
 	done
 
