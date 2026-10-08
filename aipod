@@ -167,15 +167,15 @@ run_image() {
 podman_exec() (
 	# Split configured names on whitespace without expanding filename patterns.
 	set -f
-	for variable in ${PASS_ENV}; do
-		case "${variable}" in
+	for _aipod_pass_env_name in ${PASS_ENV}; do
+		case "${_aipod_pass_env_name}" in
 		'' | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
-			die critical "invalid environment variable name in PASS_ENV: ${variable}"
+			die critical "invalid environment variable name in PASS_ENV: ${_aipod_pass_env_name}"
 			;;
 		esac
 
-		export "${variable?}"
-		set -- --env "${variable}" "$@"
+		export "${_aipod_pass_env_name?}"
+		set -- --env "${_aipod_pass_env_name}" "$@"
 	done
 
 	if [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then

@@ -452,7 +452,7 @@ Describe 'aipod'
 		passthrough_not_persisted() {
 			stored_env="$(podman container inspect --format \
 				'{{range .Config.Env}}{{println .}}{{end}}' "${AIPOD_NAME}")" || return 1
-			! printf '%s\n' "${stored_env}" | grep -q '^AIPOD_TEST_PASS_'
+			! printf '%s\n' "${stored_env}" | grep -q -e '^AIPOD_TEST_PASS_' -e '^variable='
 		}
 
 		Describe 'values'
@@ -477,6 +477,26 @@ Describe 'aipod'
 				When call passthrough_values "$1"
 				The status should be success
 				The output should eq "$(printf 'empty:set:<>\nunset:\nspaces:<  secret with spaces  >\nnewlines:<first secret line\nsecond secret line\n>')"
+				if [ "$1" = up ]; then
+					The stderr should include "opening shell in running container ${AIPOD_NAME}"
+				fi
+				Assert passthrough_not_persisted
+			End
+
+			It "exports config values and preserves a variable named variable through $1"
+				passthrough_config_values() {
+					unset AIPOD_TEST_PASS_CONFIG variable
+					cat >> "${TEST_ROOT}/aipod.conf" <<-'EOF'
+						PASS_ENV="variable AIPOD_TEST_PASS_CONFIG"
+						variable='original value'
+						AIPOD_TEST_PASS_CONFIG='secret from config'
+					EOF
+					run_aipod run true </dev/null >/dev/null 2>&1 || return 1
+					passthrough_exec "$1" 'printf "variable:<%s>\nconfig:<%s>\n" "$variable" "$AIPOD_TEST_PASS_CONFIG"'
+				}
+				When call passthrough_config_values "$1"
+				The status should be success
+				The output should eq "$(printf 'variable:<original value>\nconfig:<secret from config>')"
 				if [ "$1" = up ]; then
 					The stderr should include "opening shell in running container ${AIPOD_NAME}"
 				fi
